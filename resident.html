@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <title>Resident Dashboard | GATEKEEP</title>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .active-nav { background-color: #eff6ff; color: #2563eb; border-right: 4px solid #2563eb; }
+    </style>
+</head>
+<body class="bg-slate-50 flex min-h-screen">
+
+    <aside class="w-64 bg-white border-r border-slate-200 flex flex-col fixed h-full z-10">
+        <div class="p-6 border-b border-slate-100">
+            <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">GATE<span class="text-blue-600">KEEP</span></h1>
+        </div>
+        
+        <div class="m-4 p-4 bg-slate-900 rounded-2xl text-white">
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Flat No.</p>
+            <p id="displayFlatNo" class="text-xl font-bold">---</p>
+        </div>
+        
+        <nav class="flex-1 px-2 py-4 space-y-1">
+            <button onclick="showPage('notice', this)" class="nav-btn active-nav w-full text-left p-3 rounded-xl font-semibold flex items-center gap-3 transition-all">
+                <span>📢</span> Notices
+            </button>
+            <button onclick="showPage('visitors', this)" class="nav-btn w-full text-left p-3 hover:bg-slate-50 rounded-xl font-semibold flex items-center gap-3 transition-all text-slate-600">
+                <span>👤</span> Visitors
+            </button>
+            <button onclick="showPage('amenities', this)" class="nav-btn w-full text-left p-3 hover:bg-slate-50 rounded-xl font-semibold flex items-center gap-3 transition-all text-slate-600">
+                <span>🏸</span> Bookings
+            </button>
+            <button onclick="showPage('complaints', this)" class="nav-btn w-full text-left p-3 hover:bg-slate-50 rounded-xl font-semibold flex items-center gap-3 transition-all text-slate-600">
+                <span>⚠️</span> Complaints
+            </button>
+        </nav>
+        
+        <div class="p-4">
+            <a href="index.html" class="w-full p-3 text-red-500 font-bold text-sm hover:bg-red-50 rounded-xl flex items-center gap-2">Sign Out</a>
+        </div>
+    </aside>
+
+    <main class="flex-1 ml-64 p-8 lg:p-12">
+        <header class="mb-8">
+            <h2 id="page-title" class="text-3xl font-extrabold text-slate-900">Notices</h2>
+            <p class="text-slate-500">Stay updated with community announcements.</p>
+        </header>
+
+        <div id="notice-page" class="space-y-6 max-w-3xl">
+            <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+                <h3 class="font-bold text-lg mb-4 text-slate-800">Post a New Notice</h3>
+                <input type="text" id="noticeTitle" placeholder="Notice Title (e.g., Water Supply)" class="w-full p-3 mb-3 bg-slate-50 border rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
+                <textarea id="noticeContent" class="w-full p-3 bg-slate-50 border rounded-xl h-24 outline-none focus:ring-2 focus:ring-blue-500" placeholder="Type your message here..."></textarea>
+                <button onclick="addNotice()" class="mt-4 bg-blue-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-blue-700 transition-all w-full">Post to Bulletin Board</button>
+            </div>
+
+            <div id="notice-list" class="space-y-4">
+                </div>
+        </div>
+
+        <div id="visitors-page" class="hidden space-y-8 max-w-4xl">
+            <div id="pending-container" class="grid gap-4"></div>
+            <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm">
+                <div class="px-6 py-4 border-b bg-slate-50/50 font-bold">Entry Log</div>
+                <div id="visitor-history" class="divide-y divide-slate-100"></div>
+            </div>
+        </div>
+        <div id="amenities-page" class="hidden max-w-2xl mx-auto">
+    <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
+        <div class="flex items-center gap-3 mb-6">
+            <div class="bg-blue-100 p-3 rounded-2xl text-2xl">🏸</div>
+            <div>
+                <h3 class="font-bold text-xl text-slate-900">Facility Booking</h3>
+                <p class="text-sm text-slate-500">Reserve a slot for your favorite sports.</p>
+            </div>
+        </div>
+
+        <div class="space-y-4">
+            <div>
+                <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Select Amenity</label>
+                <select id="facility" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 font-semibold text-slate-700 appearance-none">
+                    <option value="Turf (Football/Cricket)">⚽ Turf (Football/Cricket)</option>
+                    <option value="Table Tennis">🏓 Table Tennis Room</option>
+                    <option value="Carrom Hub">🎯 Carrom Hub</option>
+                    <option value="Gym Membership">💪 Gym Session</option>
+                </select>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Date</label>
+                    <input type="date" id="bookDate" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 font-medium">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Time Slot</label>
+                    <input type="time" id="bookTime" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 font-medium">
+                </div>
+            </div>
+
+            <button onclick="addBooking()" class="w-full bg-blue-600 text-white p-4 rounded-2xl font-bold shadow-lg shadow-blue-100 hover:bg-blue-700 transition-all mt-2">
+                CONFIRM RESERVATION
+            </button>
+        </div>
+
+        <div class="mt-10">
+            <h4 class="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2">
+                <span class="w-2 h-2 bg-green-500 rounded-full"></span> Your Bookings
+            </h4>
+            <div id="booking-list" class="space-y-3">
+                </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Updated addBooking Logic
+    function addBooking() {
+        const type = document.getElementById('facility').value;
+        const date = document.getElementById('bookDate').value;
+        const time = document.getElementById('bookTime').value;
+
+        if(!date || !time) {
+            alert("Please select both Date and Time");
+            return;
+        }
+
+        const bookingId = Date.now();
+        const list = document.getElementById('booking-list');
+        
+        const item = document.createElement('div');
+        item.className = "p-4 bg-slate-50 rounded-2xl border border-slate-200 flex justify-between items-center animate-in fade-in duration-300";
+        item.setAttribute('id', `booking-${bookingId}`);
+        
+        item.innerHTML = `
+            <div class="flex items-center gap-4">
+                <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center border border-slate-100">📅</div>
+                <div>
+                    <p class="font-bold text-slate-800">${type}</p>
+                    <p class="text-xs text-slate-500 font-medium">${date} at ${time}</p>
+                </div>
+            </div>
+            <button onclick="document.getElementById('booking-${bookingId}').remove()" class="text-red-400 hover:text-red-600 font-bold text-xs p-2">
+                CANCEL
+            </button>
+        `;
+        
+        list.prepend(item);
+
+        // Clear inputs after booking
+        document.getElementById('bookDate').value = "";
+        document.getElementById('bookTime').value = "";
+    }
+</script>
+        <div id="complaints-page" class="hidden space-y-6 max-w-3xl mx-auto">
+    <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
+        <div class="flex items-center gap-3 mb-6">
+            <div class="bg-amber-100 p-3 rounded-2xl text-2xl">⚠️</div>
+            <div>
+                <h3 class="font-bold text-xl text-slate-900">Community Grievances</h3>
+                <p class="text-sm text-slate-500">Raise an issue for the management or community to see.</p>
+            </div>
+        </div>
+
+        <div class="space-y-4">
+            <input type="text" id="compTitle" placeholder="Issue Subject (e.g., Lift Not Working)" 
+                class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-amber-500 font-semibold">
+            
+            <textarea id="compContent" placeholder="Describe the problem in detail..." 
+                class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl h-32 outline-none focus:ring-2 focus:ring-amber-500"></textarea>
+            
+            <button onclick="addComplaint()" class="w-full bg-slate-900 text-white p-4 rounded-2xl font-bold hover:bg-slate-800 transition-all">
+                SUBMIT COMPLAINT
+            </button>
+        </div>
+    </div>
+
+    <div id="complaint-list" class="space-y-4">
+        </div>
+</div>
+
+<script>
+    // --- COMPLAINT LOGIC ---
+    function addComplaint() {
+        const title = document.getElementById('compTitle').value;
+        const content = document.getElementById('compContent').value;
+        
+        if(!title || !content) return alert("Please fill in all fields");
+
+        const newComplaint = {
+            id: Date.now(),
+            title: title,
+            content: content,
+            postedBy: user.id, // Taken from the logged-in user
+            date: new Date().toLocaleDateString(),
+            status: "Reported"
+        };
+
+        const complaints = JSON.parse(localStorage.getItem('community_complaints')) || [];
+        complaints.unshift(newComplaint);
+        localStorage.setItem('community_complaints', JSON.stringify(complaints));
+
+        // Clear inputs
+        document.getElementById('compTitle').value = '';
+        document.getElementById('compContent').value = '';
+        
+        renderComplaints();
+    }
+
+    function renderComplaints() {
+        const complaints = JSON.parse(localStorage.getItem('community_complaints')) || [];
+        const list = document.getElementById('complaint-list');
+        
+        if(!list) return;
+
+        list.innerHTML = complaints.map(c => `
+            <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm relative group animate-in fade-in slide-in-from-bottom-2">
+                <div class="flex justify-between items-start mb-3">
+                    <div>
+                        <p class="text-[10px] font-black text-amber-600 uppercase tracking-widest">
+                            Issue #${c.id.toString().slice(-4)} • Flat ${c.postedBy}
+                        </p>
+                        <h4 class="font-bold text-xl text-slate-800">${c.title}</h4>
+                    </div>
+                    <span class="bg-amber-50 text-amber-600 px-3 py-1 rounded-full text-[10px] font-bold border border-amber-100">
+                        ${c.status}
+                    </span>
+                </div>
+                <p class="text-slate-600 text-sm leading-relaxed">${c.content}</p>
+                <div class="mt-4 pt-4 border-t border-slate-50 flex justify-between items-center">
+                    <span class="text-xs text-slate-400 font-medium">Posted on ${c.date}</span>
+                    <button onclick="deleteComplaint(${c.id})" class="text-red-400 hover:text-red-600 text-xs font-bold opacity-0 group-hover:opacity-100 transition-all">
+                        WITHDRAW
+                    </button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function deleteComplaint(id) {
+        if(!confirm("Are you sure you want to remove this complaint?")) return;
+        let complaints = JSON.parse(localStorage.getItem('community_complaints')) || [];
+        complaints = complaints.filter(c => c.id !== id);
+        localStorage.setItem('community_complaints', JSON.stringify(complaints));
+        renderComplaints();
+    }
+
+    // Add this to your initial loading sequence
+    renderComplaints();
+</script>
+    </main>
+
+    <script>
+        const user = JSON.parse(localStorage.getItem('gatekeep_user')) || { id: "Guest", name: "User" };
+        document.getElementById('displayFlatNo').innerText = user.id;
+
+        function showPage(pageId, btn) {
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active-nav', 'text-blue-600'));
+            btn.classList.add('active-nav');
+            ['notice-page', 'visitors-page', 'amenities-page', 'complaints-page'].forEach(p => {
+                const el = document.getElementById(p);
+                if(el) el.classList.add('hidden');
+            });
+            document.getElementById(pageId + '-page').classList.remove('hidden');
+            document.getElementById('page-title').innerText = pageId.charAt(0).toUpperCase() + pageId.slice(1);
+        }
+
+        // --- NOTICE LOGIC ---
+        function addNotice() {
+            const title = document.getElementById('noticeTitle').value;
+            const content = document.getElementById('noticeContent').value;
+            if(!title || !content) return alert("Please fill title and content");
+
+            const newNotice = {
+                id: Date.now(),
+                title: title,
+                content: content,
+                postedBy: user.id,
+                date: new Date().toLocaleDateString()
+            };
+
+            const notices = JSON.parse(localStorage.getItem('community_notices')) || [];
+            notices.unshift(newNotice);
+            localStorage.setItem('community_notices', JSON.stringify(notices));
+
+            document.getElementById('noticeTitle').value = '';
+            document.getElementById('noticeContent').value = '';
+            renderNotices();
+        }
+
+        function renderNotices() {
+            const notices = JSON.parse(localStorage.getItem('community_notices')) || [];
+            const list = document.getElementById('notice-list');
+            list.innerHTML = notices.map(n => `
+                <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm relative group">
+                    <p class="text-[10px] font-black text-blue-600 uppercase tracking-widest mb-1">${n.date} • Flat ${n.postedBy}</p>
+                    <h4 class="font-bold text-xl text-slate-800">${n.title}</h4>
+                    <p class="text-slate-600 mt-2">${n.content}</p>
+                    <button onclick="deleteNotice(${n.id})" class="absolute top-6 right-6 text-red-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all font-bold text-xs">DELETE</button>
+                </div>
+            `).join('');
+        }
+
+        function deleteNotice(id) {
+            let notices = JSON.parse(localStorage.getItem('community_notices')) || [];
+            notices = notices.filter(n => n.id !== id);
+            localStorage.setItem('community_notices', JSON.stringify(notices));
+            renderNotices();
+        }
+
+        // --- VISITOR SYNC LOGIC ---
+        function refreshVisitors() {
+            const allLogs = JSON.parse(localStorage.getItem('visitor_logs')) || [];
+            const myVisitors = allLogs.filter(v => v.flat.toLowerCase() === user.id.toLowerCase());
+            
+            // Update Pending
+            const pendingContainer = document.getElementById('pending-container');
+            const pending = myVisitors.filter(v => v.status === 'Pending');
+            pendingContainer.innerHTML = pending.map(v => `
+                <div class="bg-blue-600 text-white p-6 rounded-3xl flex justify-between items-center">
+                    <div><h4 class="font-bold text-lg">${v.name}</h4><p class="opacity-80">${v.purpose}</p></div>
+                    <button onclick="updateStatus(${v.id}, 'Approved')" class="bg-white text-blue-600 px-6 py-2 rounded-xl font-bold">Approve</button>
+                </div>
+            `).join('') || '<p class="text-slate-400">No pending visitors.</p>';
+
+            // Update History
+            const historyContainer = document.getElementById('visitor-history');
+            const history = myVisitors.filter(v => v.status !== 'Pending');
+            historyContainer.innerHTML = history.map(v => `
+                <div class="p-4 flex justify-between bg-white">
+                    <span><b>${v.name}</b> (${v.time})</span>
+                    <span class="${v.status === 'Approved' ? 'text-green-500' : 'text-red-500'} font-bold">${v.status}</span>
+                </div>
+            `).join('');
+        }
+
+        function updateStatus(id, status) {
+            let logs = JSON.parse(localStorage.getItem('visitor_logs'));
+            logs = logs.map(v => v.id === id ? {...v, status} : v);
+            localStorage.setItem('visitor_logs', JSON.stringify(logs));
+            refreshVisitors();
+        }
+
+        // Initial Runs
+        renderNotices();
+        setInterval(refreshVisitors, 3000);
+        refreshVisitors();
+    </script>
+</body>
+</html>

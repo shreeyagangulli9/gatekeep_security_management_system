@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>Security Login | GATEKEEP</title>
+</head>
+<body class="bg-slate-900 font-['Inter'] min-h-screen flex items-center justify-center">
+    <div class="bg-slate-800 p-10 rounded-3xl shadow-2xl border border-slate-700 w-full max-w-md">
+        <a href="index.html" class="text-sm text-slate-400 hover:text-white mb-6 inline-block">← Back to selection</a>
+        <div class="text-center mb-8">
+    <h1 class="text-4xl font-black tracking-tighter text-white">
+        GATE<span class="text-blue-500">KEEP</span>
+    </h1>
+    <p class="text-slate-400 text-xs font-medium uppercase tracking-widest mt-1">
+        Systematic Security Management System
+    </p>
+</div>
+
+<h2 class="text-2xl font-bold text-slate-100 mb-2">Guard Console</h2>
+        
+        <p class="text-slate-400 mb-8">Authorized Personnel Only.</p>
+        
+        <form onsubmit="handleLogin(event, 'security')">
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold text-slate-300 mb-1">Guard Name</label>
+                    <input type="text" id="userName" required class="w-full p-3 rounded-xl bg-slate-700 border border-slate-600 text-white focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-300 mb-1">Gate Shift ID</label>
+                    <input type="text" id="userID" required class="w-full p-3 rounded-xl bg-slate-700 border border-slate-600 text-white focus:ring-2 focus:ring-blue-500 outline-none" placeholder="e.g. GATE-01">
+                </div>
+                <button type="submit" class="w-full bg-white text-slate-900 font-bold py-4 rounded-xl hover:bg-slate-200 transition-all">
+                    LOGIN
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function handleLogin(e, role) {
+            e.preventDefault();
+            const name = document.getElementById('userName').value;
+            const id = document.getElementById('userID').value;
+            localStorage.setItem('gatekeep_user', JSON.stringify({ name, id, role }));
+            window.location.href = 'security.html';
+        }
+    </script>
+</body>
+</html>
