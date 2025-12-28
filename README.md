@@ -1,6 +1,6 @@
 # GATEKEEP | Systematic Security Management System
 
-GATEKEEP is a modern, lightweight web application designed to streamline community security and resident management. It features a dual-interface system for security personnel and residents.
+GATEKEEP is a web application designed to streamline community security and resident management. It features a dual-interface system for security personnel and residents.
 
 ## ✨ Key Features
 - **Security Console:** Real-time visitor registration, gate activity logs and approval request system.
